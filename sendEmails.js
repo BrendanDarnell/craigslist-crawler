@@ -2,8 +2,7 @@ require ('dotenv').config();
 const nodemailer = require('nodemailer');
 const {EMAIL: emailAddress, PASSWORD} = require('./config')
 const Email = require('email-templates');
-const handleResults = require('./craigslist-request.js');
-// const results = handleResults();
+const handleResults = require('./craigslistRequest.js');
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -17,7 +16,6 @@ const transporter = nodemailer.createTransport({
 
 async function handleEmail() {
   const results = await handleResults();
-  // console.log(results);
   const email = new Email({
     message: {
       from: 'niftylettuce@gmail.com'
