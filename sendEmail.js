@@ -14,8 +14,8 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-async function handleEmail() {
-  const results = await handleResults();
+async function sendEmail(searchResults) {
+  // const results = await handleResults(searchQuery);
   const email = new Email({
     message: {
       from: 'niftylettuce@gmail.com'
@@ -32,11 +32,11 @@ async function handleEmail() {
         to: 'brendan_darnell@hotmail.com'
       },
       locals: {
-        results: results
+        results: searchResults
       }
     })
     .then(console.log('email sent'))
     .catch(console.error);
 }
 
-handleEmail();
+module.exports = sendEmail;

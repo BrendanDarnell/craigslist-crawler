@@ -3,8 +3,8 @@ const cheerio = require('cheerio');
 require ('dotenv').config();
 
 
-function request() {
-	return ( axios.get('https://denver.craigslist.org/search/sss?max_price=70&query=lift%20tickets')
+function request(searchQuery) {
+	return ( axios.get(`https://denver.craigslist.org/search/sss?${searchQuery}`)
 		.then(res => {
 			return res.data
 		})
@@ -12,8 +12,8 @@ function request() {
 	);
 }
 
-async function getResults() {
-	const html = await request();
+async function parseRequest(searchQuery) {
+	const html = await request(searchQuery);
 	const $ = cheerio.load(html);
 	let results = $('.rows li').map((i,el) => {
 		let result = {};
@@ -26,8 +26,8 @@ async function getResults() {
 	return results
 }
 
-function handleResults() {
-	return getResults().catch(e => console.log('Failed to parse craiglist results', e));
+function getResults(searchQuery) {
+	return parseRequest(searchQuery).catch(e => console.log('Failed to parse craiglist results', e));
 }
 
-module.exports = handleResults;
+module.exports = getResults;
