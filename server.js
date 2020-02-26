@@ -8,7 +8,6 @@ mongoose.Promise = global.Promise;
 const {PORT, DATABASE_URL} = require('./config');
 const searchRouter = require('./searchRouter');
 
-
 app.use(express.static('public'));
 app.use(express.json());
 
@@ -69,5 +68,8 @@ function closeServer() {
 if (require.main === module) {
 	runServer(DATABASE_URL).catch(err => console.error(err));
 }
+const {Searches} = require('./models')
+
+Searches.find().then(res => console.log(res));
 
 module.exports = { app, runServer, closeServer };
