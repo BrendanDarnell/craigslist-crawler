@@ -19,8 +19,9 @@ async function parseRequest(searchQuery) {
 		let result = {};
 		result.price = $(el).find('.result-price').first().text();
 		result.title = $(el).find('.result-title').first().text();
-		result.craiglistID = $(el).attr('data-pid');
-		result.date = $(el).find('time').attr('datetime')
+		result.craigslistID = $(el).attr('data-pid');
+		result.date = $(el).find('time').attr('datetime');
+		result.link = $(el).find('a.result-title').attr('href');
 		return result
 	}).get()
 	return results

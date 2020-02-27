@@ -10,41 +10,53 @@ mongoose.connect(DATABASE_URL, err => console.log(err));
 
 async function handleSearch(query) {
 	let searchResults = await getResults(query);
+	
 	return (
 		Searches.findOne({searchQuery: query})
 			.then(search => {
-				let oldResults = [...search.Results];
+				let oldResults = [...search.results];
 				let newResults = [];
-				searchResults.forEach(searchResult => {
-					oldResults.forEach((oldResult, i) => {
-						if(searchResult.craigslistID === oldResult.craigslistID) {
-							oldResults.splice(i,1);
-							newResults.push(searchResult);
-						}
+				if(oldResults.length >= 1) {
+					searchResults.forEach(searchResult => {
+						console.log('old Results');
+						console.log('searchResult', searchResult.craigslistID)
+						for(i=0; i < oldResults.length; i++) {
+							if(searchResult.craigslistID === oldResults[i].craigslistID) {
+								oldResults.splice(i,1);
+								break
+							}
+							if (i === oldResults.length - 1) {
+								newResults.push(searchResult);
+								search.results.push(searchResult);
+							}
+						}	
 					});
-				});
+				}
+				else {
+					searchResults.forEach(result => search.results.push(result));
+					search.save();
+					return searchResults;
+				}
+				search.save();
 				return newResults;
 			})
-	)
+	);
 }
 
 async function automatedEmail() {
-	const searches = await Searches.find()
-		.then(res => {
-			console.log(res);
-			return res
-		})
-		.catch(e => console.log(e));
+	const searches = await Searches.find();
 	const searchQueries = [];
 	searches.forEach(search => searchQueries.push(search.searchQuery));
-	console.log(searchQueries);
-	const searchResults = await Promise.all(searchQueries.map(async(searchQuery) => handleSearch(searchQuery)))
-	const combinedResults = [];
-	results.forEach(result => combinedResults = [...combinedResults, ...result]);
-	await sendEmail(combinedResults);
+	const searchResults = await Promise.all(searchQueries.map(async(searchQuery) => await handleSearch(searchQuery)))
+	let combinedResults = [];
+	searchResults.forEach(result => combinedResults = [...combinedResults, ...result]);
+	console.log('combinedResults', combinedResults)
+	if(combinedResults.length >= 1) {
+		sendEmail(combinedResults);
+	}
 }
 
-automatedEmail();
+automatedEmail().catch(e => console.log(e));
 
 
 

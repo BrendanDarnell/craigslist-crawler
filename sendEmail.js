@@ -18,7 +18,7 @@ async function sendEmail(searchResults) {
   // const results = await handleResults(searchQuery);
   const email = new Email({
     message: {
-      from: 'niftylettuce@gmail.com'
+      from: 'craiglist-crawler'
     },
     // uncomment below to send emails in development/test env:
     // send: true,
