@@ -54,7 +54,7 @@ async function automatedEmail() {
 	}
 }
 
-setInterval(() => automatedEmail().catch(e => console.log(e)), 1000*30);
+setInterval(() => automatedEmail().catch(e => console.log(e)), 1000*60*15);
 
 
 
