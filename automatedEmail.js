@@ -10,16 +10,14 @@ mongoose.connect(DATABASE_URL, err => console.log(err));
 
 async function handleSearch(query) {
 	let searchResults = await getResults(query);
-	
+	// console.log(searchResults)
 	return (
 		Searches.findOne({searchQuery: query})
 			.then(search => {
 				let oldResults = [...search.results];
 				let newResults = [];
-				if(oldResults.length >= 1) {
+				if(oldResults.length > 0) {
 					searchResults.forEach(searchResult => {
-						console.log('old Results');
-						console.log('searchResult', searchResult.craigslistID)
 						for(i=0; i < oldResults.length; i++) {
 							if(searchResult.craigslistID === oldResults[i].craigslistID) {
 								oldResults.splice(i,1);
@@ -51,14 +49,12 @@ async function automatedEmail() {
 	let combinedResults = [];
 	searchResults.forEach(result => combinedResults = [...combinedResults, ...result]);
 	console.log('combinedResults', combinedResults)
-	if(combinedResults.length >= 1) {
+	if(combinedResults.length > 0) {
 		sendEmail(combinedResults);
 	}
 }
 
-automatedEmail().catch(e => console.log(e));
+setInterval(() => automatedEmail().catch(e => console.log(e)), 1000*30);
 
 
 
-// console.log(Searches.find())
-// setTimeout(()=>console.log('finished'), 10000);

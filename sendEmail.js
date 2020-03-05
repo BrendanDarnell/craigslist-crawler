@@ -21,7 +21,7 @@ async function sendEmail(searchResults) {
       from: 'craiglist-crawler'
     },
     // uncomment below to send emails in development/test env:
-    // send: true,
+    send: true,
     transport: transporter
   });
    
